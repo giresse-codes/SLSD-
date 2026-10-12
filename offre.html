@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Offre — SLSD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="hdr"></div>
+<main class="w"><div id="dt"></div></main>
+<div id="ftr"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/data.js"></script>
+<script>
+SLSD.layout("");
+var x = SLSD.item(SLSD.param("id"));
+var dt = document.getElementById("dt");
+if (!x) {
+  dt.innerHTML = '<div class="emp" style="margin-top:40px">Offre introuvable. <a href="catalogue.html">Retour au catalogue</a></div>';
+} else {
+  var g = "#222";
+  SLSD.UV.forEach(function (u) { if (u[0] === x.u) g = u[3]; });
+  var img = x.i ? '<img src="' + SLSD.photo(x.i, 900) + '" alt="" referrerpolicy="no-referrer" onerror="this.remove()">' : "";
+  var ini = x.ini ? '<span class="ini">' + x.ini + "</span>" : "";
+  var price = x.p ? (x.pl ? x.pl + " " : "") + SLSD.fmt(x.p) : x.pl;
+  var label = x.t === "produit" ? "Ajouter au panier" : (x.t === "talent" ? "Contacter ce professionnel" : "Demander un devis");
+  dt.innerHTML = '<div class="detail"><div class="im" style="--g1:' + g + '">' + ini + img + '<span class="bd">' + SLSD.TL[x.t] + '</span></div><div>' +
+    '<span class="mono gold">' + x.u + '</span><h1 style="font-size:clamp(28px,4vw,46px);margin:10px 0">' + x.n + '</h1>' +
+    '<p class="mute">' + x.s + ' ✓ vérifié · ' + x.c + '</p><p style="font:800 30px Archivo,sans-serif;margin:16px 0">' + price + '</p>' +
+    '<button class="btn p lg" id="go" type="button" style="width:100%">' + label + '</button>' +
+    '<p class="note">Paiement protégé : l\'argent reste bloqué jusqu\'à votre validation. (Simulation)</p></div></div>';
+  document.getElementById("go").onclick = function () {
+    if (x.t === "produit") { SLSD.cart.add(x.id); SLSD.toast("Ajouté au panier"); return; }
+    SLSD.auth.current().then(function (u) {
+      if (!u) { location.href = "connexion.html?next=" + encodeURIComponent("offre.html?id=" + x.id); return; }
+      SLSD.toast("Demande envoyée à " + x.s + " (simulation)");
+    });
+  };
+}
+</script>
+</body>
+</html>

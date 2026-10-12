@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Créer un compte — SLSD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="hdr"></div>
+<main class="w"><div class="box">
+<h1>Créer un compte</h1>
+<p class="mute" style="margin:0">Choisissez comment vous utiliserez SLSD.</p>
+<div class="rt" id="rt"></div>
+<form id="f">
+<label class="fld">Nom complet<input id="nm" required autocomplete="name"></label>
+<label class="fld" id="xl" style="display:none"><span id="xt"></span><input id="xv"></label>
+<label class="fld">E-mail<input id="em" type="email" required autocomplete="email"></label>
+<label class="fld">Mot de passe (6 caractères minimum)<input id="pw" type="password" required minlength="6" autocomplete="new-password"></label>
+<label class="fld">Ville<select id="ct"></select></label>
+<label class="fld">Numéro Mobile Money<input id="ph" type="tel" placeholder="6 XX XX XX XX" autocomplete="tel"></label>
+<button class="btn p lg" type="submit" style="width:100%" id="sub">Créer mon compte</button>
+<p class="note" id="msg"></p>
+</form>
+<p class="note">Déjà un compte ? <a href="connexion.html">Se connecter</a></p>
+</div></main>
+<div id="ftr"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/data.js"></script>
+<script>
+SLSD.layout("");
+var role = SLSD.ROLES[SLSD.param("role")] ? SLSD.param("role") : "client";
+document.getElementById("ct").innerHTML = SLSD.CITIES.map(function (c) { return "<option>" + c + "</option>"; }).join("");
+function drawRoles() {
+  document.getElementById("rt").innerHTML = Object.keys(SLSD.ROLES).map(function (k) {
+    return '<button type="button" data-r="' + k + '" class="' + (k === role ? "on" : "") + '">' + SLSD.ROLES[k] + "</button>";
+  }).join("");
+  var xl = document.getElementById("xl");
+  if (role === "vendeur") { xl.style.display = ""; document.getElementById("xt").textContent = "Nom de la boutique"; }
+  else if (role === "freelance") { xl.style.display = ""; document.getElementById("xt").textContent = "Métier (ex. architecte, développeur)"; }
+  else { xl.style.display = "none"; }
+  document.getElementById("sub").textContent = "Créer mon compte " + SLSD.ROLES[role].toLowerCase();
+}
+document.getElementById("rt").addEventListener("click", function (e) { var b = e.target.closest("[data-r]"); if (b) { role = b.getAttribute("data-r"); drawRoles(); } });
+drawRoles();
+document.getElementById("f").addEventListener("submit", function (e) {
+  e.preventDefault();
+  var msg = document.getElementById("msg"); msg.className = "note"; msg.textContent = "Création du compte…";
+  SLSD.auth.signUp({
+    role: role, name: document.getElementById("nm").value.trim(), email: document.getElementById("em").value.trim(),
+    password: document.getElementById("pw").value, city: document.getElementById("ct").value, phone: document.getElementById("ph").value.trim()
+  }).then(function () {
+    if (SLSD.mode === "demo") { location.href = "espace.html"; }
+    else { msg.textContent = "Compte créé. Si un e-mail de confirmation est demandé, ouvre-le puis connecte-toi."; }
+  }).catch(function (err) { msg.className = "note err"; msg.textContent = err.message || "Création impossible."; });
+});
+</script>
+</body>
+</html>

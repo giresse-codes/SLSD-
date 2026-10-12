@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SLSD — Plateforme universelle</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="hdr"></div>
+<main>
+<div class="w hero">
+<span class="mono mute">Douala · Yaoundé · Afrique centrale · Diaspora</span>
+<h1>Tout ce dont vous avez besoin. <span class="gold">Tous ceux</span> qui peuvent le fournir.</h1>
+<p class="lead">Un téléphone, un architecte, une tenue sur mesure, un NIU, un logo : décrivez votre besoin en une phrase. SLSD trouve et protège votre paiement jusqu'à la livraison.</p>
+<form class="sbox" action="catalogue.html" method="get"><input name="q" type="search" placeholder="Un téléphone, un architecte, un NIU…" aria-label="Votre besoin"><button class="btn p lg" type="submit">Trouver →</button></form>
+</div>
+<section><div class="w"><div class="sh"><h2>Une seule porte, <span class="gold">trois façons d'entrer.</span></h2></div>
+<div class="doors">
+<div class="door"><span class="mono gold">01 · Je cherche</span><h3>Client</h3><p>Un produit, un service ou un expert : tout se trouve au même endroit, avec paiement protégé.</p><a class="btn p" href="inscription.html?role=client">Créer mon compte client</a></div>
+<div class="door"><span class="mono gold">02 · Je vends</span><h3>Vendeur</h3><p>Ouvre ta boutique et vends tes produits partout au Cameroun.</p><a class="btn p" href="inscription.html?role=vendeur">Ouvrir ma boutique</a></div>
+<div class="door"><span class="mono gold">03 · Je propose</span><h3>Professionnel</h3><p>Vends tes compétences : architecture, code, design, droit, traduction…</p><a class="btn p" href="inscription.html?role=freelance">Proposer mes services</a></div>
+</div></div></section>
+<section><div class="w"><div class="sh"><h2>Tous les univers, <span class="gold">un seul compte.</span></h2></div><div class="uni" id="uni"></div></div></section>
+<section><div class="w"><div class="sh"><h2>Les offres du moment</h2><p>Exemples fictifs pour visualiser la plateforme.</p></div><div class="grid" id="gr"></div>
+<p style="margin-top:20px"><a class="btn" href="catalogue.html">Voir tout le catalogue</a></p></div></section>
+<section id="securite"><div class="w"><div class="sh"><h2>Votre argent est <span class="gold">protégé à chaque étape.</span></h2></div>
+<div class="esc">
+<div class="st"><h3>Vous payez</h3><p>Par Mobile Money. L'argent est bloqué sur SLSD.</p></div>
+<div class="st"><h3>Le vendeur livre</h3><p>Produit expédié ou mission réalisée, étape par étape.</p></div>
+<div class="st"><h3>Vous validez</h3><p>Vous confirmez la réception, ou vous ouvrez un litige.</p></div>
+<div class="st"><h3>Il est payé</h3><p>Les fonds sont libérés au vendeur.</p></div>
+</div></div></section>
+<section id="vision"><div class="w"><div class="sh"><h2>Today. Tomorrow. <span class="gold">Beyond.</span></h2>
+<p>Aujourd'hui, la marketplace et les professionnels. Demain, l'import Chine-Afrique et la propriété intellectuelle. Plus loin, l'intelligence artificielle et l'international.</p></div></div></section>
+</main>
+<div id="ftr"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/data.js"></script>
+<script>
+SLSD.layout("");
+document.getElementById("uni").innerHTML = SLSD.UV.map(function (u) {
+  return '<a class="u" href="catalogue.html?u=' + encodeURIComponent(u[0]) + '" style="--g1:' + u[3] + '"><img src="' + SLSD.photo(u[2], 500) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span>' + u[0] + '</span></a>';
+}).join("");
+document.getElementById("gr").innerHTML = [0, 2, 13, 8, 15, 10].map(function (i) { return SLSD.card(SLSD.ITEMS[i]); }).join("");
+</script>
+</body>
+</html>

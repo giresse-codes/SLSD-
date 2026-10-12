@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mon espace — SLSD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="hdr"></div>
+<main class="w"><section style="padding-top:34px"><div id="sp"><p class="mute">Chargement…</p></div></section></main>
+<div id="ftr"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/data.js"></script>
+<script>
+SLSD.layout("");
+var DASH = {
+  client: { k: [["2", "Commandes en cours"], ["1", "Livraison à confirmer"], ["0 XAF", "Fonds en séquestre"]],
+    l: ["iPhone 13 reconditionné · expédié", "Frigo double porte · paiement bloqué"],
+    todo: ["Suivi de commande réel", "Confirmation de réception", "Avis après achat"] },
+  vendeur: { k: [["12", "Ventes ce mois"], ["3", "Commandes à expédier"], ["184 500 XAF", "Solde retirable"]],
+    l: ["Écouteurs Bluetooth · à expédier", "Sneakers urbaines · livré, paiement libéré"],
+    todo: ["Ajout de produits avec photos", "Gestion des commandes", "Retrait Mobile Money"] },
+  freelance: { k: [["4", "Demandes reçues"], ["2", "Missions en cours"], ["300 000 XAF", "Étape à valider"]],
+    l: ["Plans de maison · étape 2 sur 3", "Traduction dossier · en attente de validation"],
+    todo: ["Profil, CV et portfolio", "Missions par étapes", "Facturation et retrait"] }
+};
+SLSD.auth.current().then(function (u) {
+  var z = document.getElementById("sp");
+  if (!u) { location.href = "connexion.html?next=espace.html"; return; }
+  var d = DASH[u.role] || DASH.client;
+  z.innerHTML = '<span class="mono gold" id="rl"></span><h1 style="font-size:clamp(30px,5vw,50px);margin:8px 0" id="nm"></h1>' +
+    '<p class="mute" id="ve"></p><div class="kp">' + d.k.map(function (k) { return "<div><b>" + k[0] + "</b><span>" + k[1] + "</span></div>"; }).join("") + "</div>" +
+    d.l.map(function (l) { return '<div class="ln"><span>' + l + "</span></div>"; }).join("") +
+    '<p class="note">Chiffres d\'exemple. À construire ensuite : ' + d.todo.join(", ") + '.</p>' +
+    '<p style="margin-top:20px"><button class="btn" id="out" type="button">Se déconnecter</button></p>';
+  document.getElementById("rl").textContent = SLSD.ROLES[u.role] || "Client";
+  document.getElementById("nm").textContent = u.name || "Mon espace";
+  document.getElementById("ve").textContent = (u.city ? u.city + " · " : "") + (u.verified ? "Profil vérifié ✓" : "Profil en attente de vérification");
+  document.getElementById("out").onclick = function () { SLSD.auth.signOut().then(function () { location.href = "index.html"; }); };
+});
+</script>
+</body>
+</html>
