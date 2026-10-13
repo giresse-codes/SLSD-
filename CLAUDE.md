@@ -183,6 +183,8 @@ slsd/
 7. Faire valider le montage par un juriste camerounais.
 8. Lancer avec de vrais premiers utilisateurs à Douala.
 
+Juste après le passage en mode réel (point 2) : **refonte visuelle** (voir section 15).
+
 ---
 
 ## 14. Consignes pour Claude Code
@@ -193,3 +195,29 @@ slsd/
 - Ne jamais coder de logique où SLSD détiendrait l'argent : toujours passer par l'agrégateur.
 - Respecter l'identité visuelle noir / blanc / or.
 - Après chaque changement poussé sur GitHub, rappeler à Giresse de faire `git pull` dans Termux puis de tester via « Open in browser ».
+
+---
+
+## 15. Direction visuelle — refonte prévue (après le passage au mode réel)
+
+Demandée le 13 octobre 2026. **Ordre : d'abord finir Supabase (mode réel), ensuite la refonte**, sur la même branche, puis pousser sur `main`.
+
+**Inspirations (vidéos fournies par Giresse) :**
+- *Le plus proche* — site sombre de motion design (Scalyx) : fond très sombre, **une seule couleur d'accent**, cartes et captures qui glissent et s'agrandissent au défilement, textes révélés progressivement.
+- Site immobilier « FIND » : grande image plein écran, très grand titre, typographie géante (« Buy / Sell / Rent ») qui défile, beaucoup d'espace.
+- Site logistique (camions) : grandes photos plein écran, sections qui s'ouvrent l'une après l'autre.
+
+**Ce que la refonte doit donner :**
+- Accueil : grande image plein écran et grand titre qui apparaît en douceur.
+- Animations au défilement : sections qui glissent, s'ouvrent ou s'agrandissent ; textes révélés progressivement.
+- Grandes cartes avec photos pour les univers (produits, services, professionnels).
+- Typographie très grande et élégante, beaucoup d'espace.
+- Sombre, avec **l'or comme seule couleur d'accent** (identité noir / blanc / or). Pas de logo qui tourne, pas d'effet gadget.
+
+**Règles techniques :**
+- GSAP + ScrollTrigger autorisés via CDN (version fixée).
+- Rapide sur un Android moyen en connexion lente : images légères (largeur adaptée, `loading="lazy"`), animations fluides (uniquement `transform` et `opacity`).
+- Respecter `prefers-reduced-motion` : aucune animation pour ceux qui l'ont demandé.
+- **Si une animation ne charge pas, le contenu reste visible et utilisable** : le contenu est visible par défaut, c'est le JavaScript qui le cache juste avant de l'animer.
+- Garder tous les `id`, classes et attributs utilisés par `js/app.js` et les scripts des pages (ex. `#hdr`, `#ftr`, `#gr`, `#uni`, `#cn`, `#au`, `data-add`…).
+- **Montrer d'abord l'accueil seul** à Giresse avant de refaire les autres pages.
