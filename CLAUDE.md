@@ -1,7 +1,7 @@
 # CLAUDE.md — Contexte complet du projet SLSD
 
 > Ce fichier est lu en premier par Claude Code. Il contient tout ce qu'il faut savoir pour travailler sur SLSD sans repartir de zéro.
-> Dernière mise à jour : 13 octobre 2026.
+> Dernière mise à jour : 13 octobre 2026 (Supabase connecté).
 
 ---
 
@@ -142,7 +142,7 @@ Chacune a son propre parcours de création de compte :
 
 ## 12. État actuel du code
 
-Site statique **HTML / CSS / JavaScript** multi-pages, en **mode démo** par défaut (données fictives enregistrées sur l'appareil).
+Site statique **HTML / CSS / JavaScript** multi-pages. Il bascule tout seul : **mode réel** si `js/config.js` contient les clés Supabase (c'est le cas depuis le 13 octobre 2026), **mode démo** (données fictives sur l'appareil) si elles sont vides ou si le script Supabase ne charge pas.
 
 ```
 slsd/
@@ -155,7 +155,7 @@ slsd/
 ├── espace.html         Mon espace (formulaire : nom, e-mail, mot de passe, ville, numéro Mobile Money)
 ├── vision.html         Page vision
 ├── css/style.css
-├── js/config.js        Clés Supabase (vides = mode démo)
+├── js/config.js        URL + clé publique Supabase (vides = mode démo)
 ├── js/app.js           Logique du site
 ├── js/data.js          Données démo : 9 univers, 20 offres
 ├── assets/logo.jpg
@@ -164,8 +164,15 @@ slsd/
 └── README.md
 ```
 
-- **Base de données prévue :** Supabase (PostgreSQL). Le schéma est prêt dans `sql/schema.sql`.
-- **Pour passer du mode démo au mode réel :** créer un compte gratuit sur supabase.com → coller `sql/schema.sql` dans le SQL Editor → récupérer l'URL et la clé `anon` (Project Settings > API) → les coller dans `js/config.js`.
+- **Supabase est connecté (13 octobre 2026) :**
+  - projet `slsd` créé (région Europe de l'Ouest, plan gratuit) ;
+  - `sql/schema.sql` installé : **6 tables** (`profiles`, `profils_prives`, `listings`, `orders`, `order_items`, `reviews`) avec règles RLS et la fonction `passer_commande()` ;
+  - authentification **par e-mail** activée, inscription autorisée ;
+  - **« Confirm email » désactivé pour les tests** → à **réactiver avant le lancement public** ;
+  - la **Publishable key** (`sb_publishable_…`) et l'URL du projet sont dans `js/config.js` (clé publique, sans danger dans le code) ;
+  - **l'inscription crée un vrai compte** dans `profiles`.
+- **Jamais dans le code du site :** la clé `sb_secret_…`, la clé `service_role` et le mot de passe de la base.
+- **Ce qui reste en démo dans `js/app.js` et les pages (à brancher, étape 4) :** offres lues depuis `data.js`, panier, publication d'offre, création de commande, chiffres de « Mon espace ».
 - Le script CDN Supabase est **présent dans les 8 pages HTML** (vérifié le 13 octobre 2026). Sa version doit être fixée (pas `@2` tout court) pour éviter qu'une mise à jour casse le site sans prévenir.
 - **Choix validés pour le mode réel :** chaque nouvelle offre est « en attente » et Giresse la valide lui-même dans Supabase (Table Editor → `listings` → `status` = `active`). Statuts de commande sans accents dans la base : `en_attente_paiement`, `paye_bloque`, `livre`, `valide`, `litige`, `rembourse` (affichés avec accents sur le site).
 - Stack long terme envisagée : React / Next.js, TypeScript, Node.js / Python, PostgreSQL.
@@ -175,7 +182,7 @@ slsd/
 ## 13. Prochaines étapes (dans l'ordre conseillé)
 
 1. Vérifier dans le vrai navigateur : lien Vision, recherche, ajout au panier, Mon espace, déconnexion / reconnexion.
-2. Créer le compte Supabase et passer en mode réel.
+2. ~~Créer le compte Supabase~~ — **fait** (13 octobre 2026). Reste : brancher `js/app.js` sur la base (offres, publication, panier, commandes).
 3. Choisir l'agrégateur de paiement (Fapshi ou CamPay) et confirmer le blocage / libération des fonds.
 4. Implémenter le parcours séquestre : paiement → bloqué → validation → libération / litige.
 5. Ajouter la vérification vendeur (preuve de statut).
@@ -183,7 +190,12 @@ slsd/
 7. Faire valider le montage par un juriste camerounais.
 8. Lancer avec de vrais premiers utilisateurs à Douala.
 
-Juste après le passage en mode réel (point 2) : **refonte visuelle** (voir section 15).
+### À faire — liste ajoutée le 13 octobre 2026
+
+- **Refonte visuelle animée** : site sombre très animé, noir et or, avec GSAP + ScrollTrigger (voir section 15). On montre d'abord l'accueil seul.
+- **Petit œil 👁 pour afficher le mot de passe** (pages `inscription.html` et `connexion.html`). Le champ reste de type `password` par défaut ; l'œil le bascule en `text` et doit être utilisable au doigt (bouton assez grand, `aria-label`).
+- **Format du numéro Mobile Money avec l'indicatif +237** (champ `#ph` de `inscription.html`) : afficher « +237 » fixe devant le champ, n'accepter que 9 chiffres commençant par 6 (ex. 6 XX XX XX XX), enregistrer le numéro en `+2376XXXXXXXX`. La base accepte déjà 30 caractères.
+- Réactiver « Confirm email » dans Supabase avant le lancement public.
 
 ---
 
