@@ -166,7 +166,8 @@ slsd/
 
 - **Base de données prévue :** Supabase (PostgreSQL). Le schéma est prêt dans `sql/schema.sql`.
 - **Pour passer du mode démo au mode réel :** créer un compte gratuit sur supabase.com → coller `sql/schema.sql` dans le SQL Editor → récupérer l'URL et la clé `anon` (Project Settings > API) → les coller dans `js/config.js`.
-- Le script CDN Supabase a été retiré des 8 pages HTML pendant un débogage (inoffensif en mode démo, **à remettre** au passage en mode réel).
+- Le script CDN Supabase est **présent dans les 8 pages HTML** (vérifié le 13 octobre 2026). Sa version doit être fixée (pas `@2` tout court) pour éviter qu'une mise à jour casse le site sans prévenir.
+- **Choix validés pour le mode réel :** chaque nouvelle offre est « en attente » et Giresse la valide lui-même dans Supabase (Table Editor → `listings` → `status` = `active`). Statuts de commande sans accents dans la base : `en_attente_paiement`, `paye_bloque`, `livre`, `valide`, `litige`, `rembourse` (affichés avec accents sur le site).
 - Stack long terme envisagée : React / Next.js, TypeScript, Node.js / Python, PostgreSQL.
 
 ---
